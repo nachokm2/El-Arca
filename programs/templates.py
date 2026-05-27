@@ -33,6 +33,7 @@ PROGRAM_TEMPLATES: dict[str, dict] = {
         "incertidumbre_percibida": 0.25,
         "retorno_profesional": 0.80,
         "roi_percibido": 0.75,
+        "horas_semanales_requeridas": 8,
     },
     "diplomado_data_analytics": {
         "id": "diplomado_data_analytics",
@@ -66,6 +67,7 @@ PROGRAM_TEMPLATES: dict[str, dict] = {
         "incertidumbre_percibida": 0.35,
         "retorno_profesional": 0.88,
         "roi_percibido": 0.82,
+        "horas_semanales_requeridas": 12,
     },
     "diplomado_marketing_digital": {
         "id": "diplomado_marketing_digital",
@@ -99,6 +101,7 @@ PROGRAM_TEMPLATES: dict[str, dict] = {
         "incertidumbre_percibida": 0.20,
         "retorno_profesional": 0.70,
         "roi_percibido": 0.65,
+        "horas_semanales_requeridas": 7,
     },
     "diplomado_salud_mental_laboral": {
         "id": "diplomado_salud_mental_laboral",
@@ -132,6 +135,7 @@ PROGRAM_TEMPLATES: dict[str, dict] = {
         "incertidumbre_percibida": 0.22,
         "retorno_profesional": 0.72,
         "roi_percibido": 0.60,
+        "horas_semanales_requeridas": 8,
     },
 }
 
