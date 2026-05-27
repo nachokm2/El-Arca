@@ -71,7 +71,27 @@ APELLIDOS = [
     "González", "Muñoz", "Rojas", "Díaz", "Pérez", "Soto", "Contreras", "Silva",
     "Martínez", "Sepúlveda", "Morales", "Torres", "Flores", "Miranda", "Castillo", "Fuentes",
 ]
-CIUDADES = ["Santiago", "Valparaíso", "Concepción", "La Serena", "Antofagasta", "Temuco", "Iquique", "Rancagua"]
+CIUDADES = [
+    "Santiago", "Valparaíso", "Concepción", "La Serena", "Antofagasta",
+    "Temuco", "Iquique", "Rancagua", "Talca", "Puerto Montt",
+]
+
+# Factor de ingreso por ciudad respecto a Santiago (=1.0)
+# Fuente: Censo 2024 escolaridad promedio por región como proxy de nivel salarial
+# RM: 12.7 años | Antofagasta: 12.5 | Valparaíso: 12.2 | Biobío: 12.0
+# Araucanía: 11.5 | Maule: 11.3 | Los Lagos: 11.4 | Ñuble: 11.0
+FACTOR_INGRESO_CIUDAD: dict[str, float] = {
+    "Santiago":    1.00,
+    "Antofagasta": 0.97,
+    "Iquique":     0.93,
+    "Valparaíso":  0.88,
+    "Concepción":  0.85,
+    "La Serena":   0.83,
+    "Rancagua":    0.81,
+    "Puerto Montt":0.80,
+    "Temuco":      0.78,
+    "Talca":       0.76,
+}
 OCUPACIONES = {
     "universitario": ["Ingeniero Civil", "Administrador de Empresas", "Contador", "Periodista",
                       "Psicólogo", "Médico", "Abogado", "Profesor"],
@@ -183,10 +203,19 @@ class AgentFactory:
 
         if perfil_base:
             nivel_edu   = perfil_base.get("nivel_educativo", str(rng.choice(["tecnico", "universitario", "postgrado"])))
-            ciudad      = perfil_base.get("ciudad", str(rng.choice(CIUDADES)))
             sit_laboral = perfil_base.get("situacion_laboral", "empleado")
-            ingreso_base = perfil_base.get("ingreso_mensual_promedio", 1_000_000)
-            ingreso      = int(np.clip(rng.normal(ingreso_base, ingreso_base * 0.2), 400_000, 3_000_000))
+            # Distribución geográfica por arquetipo
+            dist_ciudades = perfil_base.get("ciudades_distribucion")
+            if dist_ciudades:
+                ciudades_list = list(dist_ciudades.keys())
+                pesos_ciudad  = list(dist_ciudades.values())
+                ciudad = random.choices(ciudades_list, weights=pesos_ciudad, k=1)[0]
+            else:
+                ciudad = perfil_base.get("ciudad", str(rng.choice(CIUDADES)))
+            # Ajustar ingreso según ciudad (factor regional real)
+            factor_ciudad = FACTOR_INGRESO_CIUDAD.get(ciudad, 0.85)
+            ingreso_base  = perfil_base.get("ingreso_mensual_promedio", 1_000_000) * factor_ciudad
+            ingreso       = int(np.clip(rng.normal(ingreso_base, ingreso_base * 0.20), 400_000, 3_500_000))
             apertura = _n("apertura_cambio_media", 0.55)
             aversion = _n("aversion_riesgo_media", 0.40)
             logro    = _n("orientacion_logro_media", 0.60)
@@ -289,15 +318,28 @@ class AgentFactory:
             "de adopción de programas académicos. Genera datos coherentes con el contexto "
             "socioeconómico, laboral y psicológico chileno. Sé preciso con los números."
         )
+        # Sortear ciudad con distribución real antes de enviar a la IA
+        dist_ciudades = perfil_base.get("ciudades_distribucion")
+        if dist_ciudades:
+            ciudad_ia = random.choices(list(dist_ciudades.keys()),
+                                       weights=list(dist_ciudades.values()), k=1)[0]
+        else:
+            ciudad_ia = perfil_base.get("ciudad", "Santiago")
+        factor_ciudad_ia = FACTOR_INGRESO_CIUDAD.get(ciudad_ia, 0.85)
+        ingreso_base_ia  = int(perfil_base.get("ingreso_mensual_promedio", 1_000_000) * factor_ciudad_ia)
+
         prompt = f"""Genera un perfil para una persona chilena con estas características base:
 {json.dumps(perfil_base, ensure_ascii=False, indent=2)}
+
+Ciudad asignada: {ciudad_ia} (no cambiar)
+Ingreso de referencia para esta ciudad: ${ingreso_base_ia:,} CLP (ajustado por nivel salarial regional)
 
 Responde con JSON con exactamente estos campos (sin texto extra):
 {{
   "nombre": "nombre apellido chileno realista",
   "edad": número entre 25 y 55,
   "genero": "masculino" o "femenino",
-  "ciudad": ciudad chilena real,
+  "ciudad": "{ciudad_ia}",
   "nivel_educativo": "tecnico" | "universitario" | "postgrado",
   "situacion_laboral": "empleado" | "independiente" | "desempleado",
   "ocupacion": "cargo específico y realista",
