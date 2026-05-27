@@ -12,6 +12,7 @@ venv/
 env/
 data/elarca.db
 data/simulations/*.json
+data/agent_profiles/saved/*.json
 .streamlit/secrets.toml
 *.log
 .DS_Store

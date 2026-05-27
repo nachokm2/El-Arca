@@ -37,11 +37,12 @@ class SimulationRunner:
 
         try:
             factory = AgentFactory(use_ai=exp_config.usar_ia)
-            # Factory ahora retorna list[dict] (perfiles), no agentes Mesa
             perfiles = factory.crear_sociedad(
                 n=exp_config.n_agentes,
                 model=None,
                 arquetipos=exp_config.arquetipos or None,
+                load_from=exp_config.cargar_agentes,
+                save_as=exp_config.guardar_agentes_como,
             )
 
             # ArcaSociety crea los agentes Mesa internamente

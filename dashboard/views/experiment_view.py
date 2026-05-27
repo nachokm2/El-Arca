@@ -6,6 +6,7 @@ from simulation.experiment import ExperimentConfig
 from simulation.runner import SimulationRunner
 from dashboard.components.metrics_panel import render_kpi_row, render_estado_pie, render_curva_difusion
 from simulation.analyzer import ResultsAnalyzer
+from ai.agent_factory import AgentFactory
 import config
 
 
@@ -84,6 +85,34 @@ def _render_configuracion():
     arquetipos_disponibles = _cargar_arquetipos()
     usar_arquetipos = st.toggle("Usar arquetipos chilenos de estudiantes", value=True)
 
+    # ── banco de agentes guardados ───────────────────────────────────────────
+    st.divider()
+    st.markdown("#### 🗄️ Banco de agentes")
+
+    guardados = AgentFactory.listar_guardados()
+    opciones_agentes = ["Generar nuevos"] + [
+        f"{g['nombre']}  ({g['n_agentes']} agentes · {g['fecha']})" for g in guardados
+    ]
+    sel_agentes = st.selectbox(
+        "Agentes a usar",
+        options=opciones_agentes,
+        help="Reutiliza agentes generados anteriormente para comparar resultados con distintos programas.",
+    )
+    cargar_agentes = None
+    if sel_agentes != "Generar nuevos":
+        idx = opciones_agentes.index(sel_agentes) - 1
+        cargar_agentes = guardados[idx]["nombre"]
+        st.info(f"Se usarán los {guardados[idx]['n_agentes']} agentes de **{cargar_agentes}**. "
+                f"El parámetro 'Número de agentes' se ignora.")
+
+    guardar_como = None
+    if usar_ia and cargar_agentes is None:
+        guardar_como = st.text_input(
+            "Guardar agentes generados como (opcional)",
+            placeholder="ej: cohorte_santiago_50",
+            help="Si rellenas este campo, los agentes generados por Claude quedarán guardados para reusar.",
+        ).strip() or None
+
     st.divider()
 
     if st.button("🚀 Ejecutar Simulación", type="primary", disabled=not prog_activo):
@@ -91,16 +120,21 @@ def _render_configuracion():
             st.error("Selecciona un programa primero.")
             return
 
+        n_efectivo = guardados[opciones_agentes.index(sel_agentes) - 1]["n_agentes"] \
+            if cargar_agentes else n_agentes
+
         exp_config = ExperimentConfig(
             nombre=nombre_exp,
-            descripcion=f"Simulación de {n_agentes} agentes sobre {prog_activo.get('nombre', '?')}",
-            n_agentes=n_agentes,
+            descripcion=f"Simulación de {n_efectivo} agentes sobre {prog_activo.get('nombre', '?')}",
+            n_agentes=n_efectivo,
             n_pasos=n_pasos,
             topologia_red=topologia,
             programa=prog_activo,
             seed=int(seed),
             usar_ia=usar_ia,
             arquetipos=arquetipos_disponibles if usar_arquetipos else [],
+            cargar_agentes=cargar_agentes,
+            guardar_agentes_como=guardar_como,
         )
 
         errores = exp_config.validar()

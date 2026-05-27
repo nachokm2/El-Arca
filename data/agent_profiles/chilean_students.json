@@ -1,5 +1,36 @@
 [
   {
+    "id": "profesional_salud",
+    "nombre_arquetipo": "Profesional de Salud",
+    "descripcion": "Profesional universitaria de salud (psicología, enfermería, kinesiología, TO, fonoaudiología, etc.), 28-42 años. Perfil dominante en la UAU: busca especialización en su área. Alta motivación por credenciales, baja ansiedad académica. 68% femenino según datos reales de matrículas.",
+    "nivel_educativo": "universitario",
+    "ciudad": "Santiago",
+    "situacion_laboral": "empleado",
+    "ingreso_mensual_promedio": 1200000,
+    "apertura_cambio_media": 0.70,
+    "aversion_riesgo_media": 0.28,
+    "orientacion_logro_media": 0.78,
+    "influenciabilidad_media": 0.52,
+    "pragmatismo_media": 0.72,
+    "autoeficacia_academica_media": 0.72,
+    "necesidad_reconocimiento_media": 0.70,
+    "satisfaccion_laboral_media": 0.58,
+    "ansiedad_academica_media": 0.18,
+    "ahorro_disponible_meses_media": 3.0,
+    "beneficios_empresa_prob": 0.28,
+    "modalidad_preferida": "online",
+    "horas_disponibles_semana_media": 9,
+    "anios_desde_ultimo_estudio_media": 4,
+    "red_apoyo_social_media": 0.68,
+    "pares_con_estudios_extra_media": 0.65,
+    "exposicion_campo_media": 0.82,
+    "edad_rango": [28, 42],
+    "genero_prob_femenino": 0.68,
+    "ocupaciones_tipicas": ["Psicólogo/a Clínico/a", "Enfermero/a", "Kinesiólogo/a", "Terapeuta Ocupacional", "Fonoaudiólogo/a", "Matrona"],
+    "areas_tipicas": ["Salud Mental", "Rehabilitación", "Salud Pública", "Pediatría"],
+    "peso_poblacional": 0.40
+  },
+  {
     "id": "profesional_ascenso",
     "nombre_arquetipo": "Profesional en Ascenso",
     "descripcion": "Trabajador universitario de 28-38 años buscando crecer profesionalmente. Empleado en empresa mediana, quiere ascender a jefatura. Precio sensible pero motivado.",
@@ -27,7 +58,7 @@
     "edad_rango": [28, 38],
     "ocupaciones_tipicas": ["Analista", "Coordinador", "Jefe de Área Junior", "Especialista"],
     "areas_tipicas": ["Tecnología", "Finanzas", "Marketing", "Operaciones"],
-    "peso_poblacional": 0.25
+    "peso_poblacional": 0.13
   },
   {
     "id": "tecnico_experiencia",
@@ -57,7 +88,7 @@
     "edad_rango": [30, 45],
     "ocupaciones_tipicas": ["Técnico Senior", "Supervisor de Turno", "Técnico de Mantenimiento"],
     "areas_tipicas": ["Operaciones", "Salud", "Tecnología"],
-    "peso_poblacional": 0.20
+    "peso_poblacional": 0.10
   },
   {
     "id": "independiente_emprendedor",
@@ -87,7 +118,7 @@
     "edad_rango": [30, 45],
     "ocupaciones_tipicas": ["Consultor", "Diseñador Independiente", "Dueño de PYMEs", "Coach"],
     "areas_tipicas": ["Marketing", "Tecnología", "Educación"],
-    "peso_poblacional": 0.15
+    "peso_poblacional": 0.07
   },
   {
     "id": "profesional_region",
@@ -117,7 +148,7 @@
     "edad_rango": [30, 45],
     "ocupaciones_tipicas": ["Profesional de Salud", "Docente", "Administrador Público", "Ingeniero"],
     "areas_tipicas": ["Salud", "Educación", "Operaciones"],
-    "peso_poblacional": 0.20
+    "peso_poblacional": 0.15
   },
   {
     "id": "gerente_medio",
@@ -147,7 +178,7 @@
     "edad_rango": [38, 52],
     "ocupaciones_tipicas": ["Gerente de Área", "Director de Proyectos", "Jefe de División"],
     "areas_tipicas": ["Finanzas", "Operaciones", "Recursos Humanos", "Tecnología"],
-    "peso_poblacional": 0.10
+    "peso_poblacional": 0.05
   },
   {
     "id": "reorientacion_profesional",

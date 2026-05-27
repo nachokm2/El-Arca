@@ -14,6 +14,8 @@ class ExperimentConfig:
     usar_ia: bool = False
     arquetipos: list[dict] = field(default_factory=list)
     variantes_programa: list[dict] = field(default_factory=list)
+    cargar_agentes: str | None = None       # nombre de set guardado a cargar
+    guardar_agentes_como: str | None = None # nombre para guardar los agentes generados
 
     def validar(self) -> list[str]:
         errores = []

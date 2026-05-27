@@ -167,7 +167,8 @@ class AgentFactory:
         return perfiles
 
     def _crear_perfil_aleatorio(self, perfil_base: dict | None, rng) -> dict:
-        genero = str(rng.choice(["masculino", "femenino"]))
+        prob_femenino = perfil_base.get("genero_prob_femenino", 0.50) if perfil_base else 0.50
+        genero = "femenino" if rng.random() < prob_femenino else "masculino"
         nombre = (str(rng.choice(NOMBRES_MASCULINOS)) if genero == "masculino"
                   else str(rng.choice(NOMBRES_FEMENINOS))) + " " + str(rng.choice(APELLIDOS))
 
@@ -228,8 +229,14 @@ class AgentFactory:
             pares_est  = float(rng.beta(3, 4))
             exposicion = float(rng.beta(3, 3))
 
-        ocupacion = str(rng.choice(OCUPACIONES.get(nivel_edu, OCUPACIONES["universitario"])))
-        area      = str(rng.choice(AREAS))
+        if perfil_base and perfil_base.get("ocupaciones_tipicas"):
+            ocupacion = str(rng.choice(perfil_base["ocupaciones_tipicas"]))
+        else:
+            ocupacion = str(rng.choice(OCUPACIONES.get(nivel_edu, OCUPACIONES["universitario"])))
+        if perfil_base and perfil_base.get("areas_tipicas"):
+            area = str(rng.choice(perfil_base["areas_tipicas"]))
+        else:
+            area = str(rng.choice(AREAS))
 
         return {
             "nombre": nombre,
