@@ -64,26 +64,46 @@ def _render_configuracion():
 
     col1, col2 = st.columns(2)
     with col1:
-        n_agentes = st.slider("Número de agentes", min_value=10, max_value=200, value=50, step=10)
-        n_pasos = st.slider("Pasos de simulación", min_value=5, max_value=50, value=20)
+        n_agentes = st.slider(
+            "Número de agentes",
+            min_value=10, max_value=200, value=50, step=10,
+            help="Tamaño de la sociedad simulada. Más agentes = resultados más estables, pero simulación más lenta. Se recomienda 50–100 para análisis rápido.",
+        )
+        n_pasos = st.slider(
+            "Pasos de simulación",
+            min_value=5, max_value=50, value=20,
+            help="Cada paso representa una ronda de interacciones en la red social. 20 pasos suele ser suficiente para ver convergencia; usa 50 para programas con adopción lenta.",
+        )
         topologia = st.selectbox(
             "Topología de red",
             options=["small_world", "scale_free", "random", "comunidades"],
             index=0,
-            help="small_world = red realista; scale_free = pocos nodos muy influyentes; comunidades = grupos por ciudad/educación",
+            help="small_world = red realista (tipo LinkedIn); scale_free = pocos nodos muy influyentes (tipo influencers); random = conexiones al azar; comunidades = grupos separados por ciudad/educación.",
         )
     with col2:
-        seed = st.number_input("Semilla aleatoria", min_value=1, max_value=9999, value=42)
+        seed = st.number_input(
+            "Semilla aleatoria",
+            min_value=1, max_value=9999, value=42,
+            help="Controla la aleatoriedad de la simulación. Usar la misma semilla reproduce exactamente los mismos resultados, útil para comparar escenarios.",
+        )
         usar_ia = st.toggle(
             "Usar IA (Claude) para agentes",
             value=False,
             disabled=not bool(config.ANTHROPIC_API_KEY),
-            help="Genera personalidades más realistas pero requiere API key y consume créditos.",
+            help="Genera personalidades más realistas usando Claude: cada agente recibe una historia coherente basada en su arquetipo. Requiere API key configurada y consume créditos (~1 token por agente).",
         )
-        nombre_exp = st.text_input("Nombre del experimento", value="Experimento EL ARCA")
+        nombre_exp = st.text_input(
+            "Nombre del experimento",
+            value="Experimento EL ARCA",
+            help="Nombre identificador para este experimento. Aparece en los reportes y en el historial de simulaciones.",
+        )
 
     arquetipos_disponibles = _cargar_arquetipos()
-    usar_arquetipos = st.toggle("Usar arquetipos chilenos de estudiantes", value=True)
+    usar_arquetipos = st.toggle(
+        "Usar arquetipos chilenos de estudiantes",
+        value=True,
+        help="Distribuye los agentes según 7 perfiles reales calibrados con datos de matrículas UAU 2026 (ej: 40% Profesional de Salud, 15% Profesional de Región, etc.). Si está desactivado, los atributos se generan de forma completamente aleatoria.",
+    )
 
     # ── banco de agentes guardados ───────────────────────────────────────────
     st.divider()

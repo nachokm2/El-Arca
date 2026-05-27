@@ -120,24 +120,41 @@ def _render_banco_agentes():
     def _flat(p: dict) -> dict:
         eco = p.get("perfil_economico", {})
         psi = p.get("perfil_psicologico", {})
+        ctx = p.get("perfil_contextual", {})
         return {
-            "nombre":           p.get("nombre", "?"),
-            "edad":             p.get("edad", 0),
-            "genero":           p.get("genero", "?"),
-            "ciudad":           p.get("ciudad", "?"),
-            "nivel_educativo":  p.get("nivel_educativo", "?"),
-            "situacion_laboral":p.get("situacion_laboral", "?"),
-            "ocupacion":        p.get("ocupacion", ""),
-            "area_profesional": p.get("area_profesional", ""),
-            "activo_en_redes":  p.get("activo_en_redes", True),
-            "ingreso_mensual":  eco.get("ingreso_mensual", 0),
-            "disposicion_pago": eco.get("disposicion_pago", 0),
+            # demográfico
+            "nombre":              p.get("nombre", "?"),
+            "edad":                p.get("edad", 0),
+            "genero":              p.get("genero", "?"),
+            "ciudad":              p.get("ciudad", "?"),
+            "nivel_educativo":     p.get("nivel_educativo", "?"),
+            "situacion_laboral":   p.get("situacion_laboral", "?"),
+            "ocupacion":           p.get("ocupacion", ""),
+            "area_profesional":    p.get("area_profesional", ""),
+            "activo_en_redes":     p.get("activo_en_redes", True),
+            # económico
+            "ingreso_mensual":     eco.get("ingreso_mensual", 0),
+            "disposicion_pago":    eco.get("disposicion_pago", 0),
             "sensibilidad_precio": eco.get("sensibilidad_precio", 0),
-            "apertura_cambio":  psi.get("apertura_cambio", 0),
-            "aversion_riesgo":  psi.get("aversion_riesgo", 0),
-            "influenciabilidad":psi.get("influenciabilidad", 0),
-            "orientacion_logro":psi.get("orientacion_logro", 0),
-            "pragmatismo":      psi.get("pragmatismo", 0),
+            "ahorro_meses":        eco.get("ahorro_disponible_meses", 0),
+            "beneficios_empresa":  eco.get("beneficios_empresa", False),
+            # psicológico
+            "apertura_cambio":     psi.get("apertura_cambio", 0),
+            "aversion_riesgo":     psi.get("aversion_riesgo", 0),
+            "influenciabilidad":   psi.get("influenciabilidad", 0),
+            "orientacion_logro":   psi.get("orientacion_logro", 0),
+            "pragmatismo":         psi.get("pragmatismo", 0),
+            "autoeficacia":        psi.get("autoeficacia_academica", 0),
+            "nec_reconocimiento":  psi.get("necesidad_reconocimiento", 0),
+            "satisfaccion_lab":    psi.get("satisfaccion_laboral", 0),
+            "ansiedad_academica":  psi.get("ansiedad_academica", 0),
+            # contextual
+            "modalidad_pref":      ctx.get("modalidad_preferida", "?"),
+            "horas_semana":        ctx.get("horas_disponibles_semana", 0),
+            "anios_sin_estudio":   ctx.get("anios_desde_ultimo_estudio", 0),
+            "red_apoyo":           ctx.get("red_apoyo_social", 0),
+            "pares_estudios":      ctx.get("pares_con_estudios_extra", 0),
+            "exposicion_campo":    ctx.get("exposicion_campo", 0),
         }
 
     flat = [_flat(p) for p in perfiles]
@@ -165,23 +182,28 @@ def _render_banco_agentes():
 
     # Tabla resumen con columnas relevantes
     cols_tabla = ["nombre", "edad", "genero", "ciudad", "nivel_educativo",
-                  "situacion_laboral", "ocupacion", "ingreso_mensual",
-                  "apertura_cambio", "aversion_riesgo", "orientacion_logro"]
+                  "situacion_laboral", "ocupacion", "ingreso_mensual", "modalidad_pref",
+                  "apertura_cambio", "aversion_riesgo", "orientacion_logro",
+                  "autoeficacia", "ansiedad_academica", "satisfaccion_lab"]
     st.dataframe(
         df_fil[cols_tabla].rename(columns={
             "nombre": "Nombre", "edad": "Edad", "genero": "Género",
             "ciudad": "Ciudad", "nivel_educativo": "Educación",
             "situacion_laboral": "Situación", "ocupacion": "Ocupación",
-            "ingreso_mensual": "Ingreso CLP",
+            "ingreso_mensual": "Ingreso CLP", "modalidad_pref": "Modalidad",
             "apertura_cambio": "Apertura", "aversion_riesgo": "Av. Riesgo",
-            "orientacion_logro": "Logro",
+            "orientacion_logro": "Logro", "autoeficacia": "Autoeficacia",
+            "ansiedad_academica": "Ansiedad Ac.", "satisfaccion_lab": "Satisf. Lab.",
         }),
         use_container_width=True,
         column_config={
-            "Ingreso CLP": st.column_config.NumberColumn(format="$%d"),
-            "Apertura":    st.column_config.ProgressColumn(format="%.2f", min_value=0, max_value=1),
-            "Av. Riesgo":  st.column_config.ProgressColumn(format="%.2f", min_value=0, max_value=1),
-            "Logro":       st.column_config.ProgressColumn(format="%.2f", min_value=0, max_value=1),
+            "Ingreso CLP":   st.column_config.NumberColumn(format="$%d"),
+            "Apertura":      st.column_config.ProgressColumn(format="%.2f", min_value=0, max_value=1),
+            "Av. Riesgo":    st.column_config.ProgressColumn(format="%.2f", min_value=0, max_value=1),
+            "Logro":         st.column_config.ProgressColumn(format="%.2f", min_value=0, max_value=1),
+            "Autoeficacia":  st.column_config.ProgressColumn(format="%.2f", min_value=0, max_value=1),
+            "Ansiedad Ac.":  st.column_config.ProgressColumn(format="%.2f", min_value=0, max_value=1),
+            "Satisf. Lab.":  st.column_config.ProgressColumn(format="%.2f", min_value=0, max_value=1),
         },
     )
 
@@ -191,8 +213,9 @@ def _render_banco_agentes():
         if nombres_lista:
             sel_ag = st.selectbox("Agente", nombres_lista, key="banco_ag_det")
             row = df_fil[df_fil["nombre"] == sel_ag].iloc[0].to_dict()
-            col_a, col_b, col_c = st.columns(3)
+            col_a, col_b, col_c, col_d = st.columns(4)
             with col_a:
+                st.markdown("**Datos personales**")
                 st.markdown(f"**{row['nombre']}**")
                 st.markdown(f"Edad: {row['edad']} · {row['genero'].capitalize()}")
                 st.markdown(f"Ciudad: {row['ciudad']}")
@@ -202,17 +225,31 @@ def _render_banco_agentes():
                 st.markdown(f"Área: {row['area_profesional']}")
                 st.markdown(f"Activo en redes: {'Sí' if row['activo_en_redes'] else 'No'}")
             with col_b:
-                st.markdown("**Perfil económico:**")
+                st.markdown("**Perfil económico**")
                 st.markdown(f"Ingreso: ${row['ingreso_mensual']:,} CLP")
-                st.progress(row['disposicion_pago'], text=f"Disposición de pago: {row['disposicion_pago']:.2f}")
-                st.progress(row['sensibilidad_precio'], text=f"Sensibilidad al precio: {row['sensibilidad_precio']:.2f}")
+                st.markdown(f"Ahorro: {row['ahorro_meses']:.1f} meses")
+                st.markdown(f"Beneficios empresa: {'Sí' if row['beneficios_empresa'] else 'No'}")
+                st.progress(row['disposicion_pago'],    text=f"Disposición pago: {row['disposicion_pago']:.2f}")
+                st.progress(row['sensibilidad_precio'], text=f"Sensib. precio: {row['sensibilidad_precio']:.2f}")
             with col_c:
-                st.markdown("**Perfil psicológico:**")
-                st.progress(row['apertura_cambio'],  text=f"Apertura al cambio: {row['apertura_cambio']:.2f}")
-                st.progress(row['aversion_riesgo'],  text=f"Aversión al riesgo: {row['aversion_riesgo']:.2f}")
-                st.progress(row['influenciabilidad'],text=f"Influenciabilidad: {row['influenciabilidad']:.2f}")
-                st.progress(row['orientacion_logro'],text=f"Orientación al logro: {row['orientacion_logro']:.2f}")
-                st.progress(row['pragmatismo'],      text=f"Pragmatismo: {row['pragmatismo']:.2f}")
+                st.markdown("**Perfil psicológico**")
+                st.progress(row['apertura_cambio'],    text=f"Apertura al cambio: {row['apertura_cambio']:.2f}")
+                st.progress(row['aversion_riesgo'],    text=f"Aversión al riesgo: {row['aversion_riesgo']:.2f}")
+                st.progress(row['influenciabilidad'],  text=f"Influenciabilidad: {row['influenciabilidad']:.2f}")
+                st.progress(row['orientacion_logro'],  text=f"Orientación logro: {row['orientacion_logro']:.2f}")
+                st.progress(row['pragmatismo'],        text=f"Pragmatismo: {row['pragmatismo']:.2f}")
+                st.progress(row['autoeficacia'],       text=f"Autoeficacia: {row['autoeficacia']:.2f}")
+                st.progress(row['nec_reconocimiento'], text=f"Nec. reconocimiento: {row['nec_reconocimiento']:.2f}")
+                st.progress(row['satisfaccion_lab'],   text=f"Satisf. laboral: {row['satisfaccion_lab']:.2f}")
+                st.progress(row['ansiedad_academica'], text=f"Ansiedad académica: {row['ansiedad_academica']:.2f}")
+            with col_d:
+                st.markdown("**Perfil contextual**")
+                st.markdown(f"Modalidad: {row['modalidad_pref']}")
+                st.markdown(f"Horas/semana: {row['horas_semana']}")
+                st.markdown(f"Años sin estudiar: {row['anios_sin_estudio']}")
+                st.progress(row['red_apoyo'],      text=f"Red de apoyo: {row['red_apoyo']:.2f}")
+                st.progress(row['pares_estudios'], text=f"Pares con estudios: {row['pares_estudios']:.2f}")
+                st.progress(row['exposicion_campo'],text=f"Exposición al campo: {row['exposicion_campo']:.2f}")
 
     # Descarga
     csv = df_fil.to_csv(index=False).encode("utf-8")

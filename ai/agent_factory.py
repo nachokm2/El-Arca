@@ -77,6 +77,8 @@ OCUPACIONES = {
                       "Psicólogo", "Médico", "Abogado", "Profesor"],
     "tecnico": ["Técnico en Informática", "Técnico Contable", "Técnico en Administración", "Técnico en Enfermería"],
     "postgrado": ["Director de Proyectos", "Gerente de Área", "Jefe de Unidad", "Consultor", "Investigador"],
+    "media": ["Vendedor/a", "Operario/a", "Auxiliar de Servicios", "Conductor/a", "Cajero/a",
+              "Empleado/a de Hogar", "Guardia de Seguridad", "Comerciante Informal"],
 }
 AREAS = ["Tecnología", "Salud", "Educación", "Finanzas", "Marketing", "Recursos Humanos", "Operaciones", "Legal"]
 
@@ -150,7 +152,11 @@ class AgentFactory:
         rng = np.random.default_rng(42)
         perfiles = []
         for _ in range(n):
-            perfil_base = random.choice(arquetipos) if arquetipos else None
+            if arquetipos:
+                pesos = [a.get("peso_poblacional", 1.0) for a in arquetipos]
+                perfil_base = random.choices(arquetipos, weights=pesos, k=1)[0]
+            else:
+                perfil_base = None
             if self.use_ai and self.claude and perfil_base:
                 try:
                     perfiles.append(self._crear_perfil_con_ia(perfil_base))
