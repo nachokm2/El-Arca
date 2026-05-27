@@ -1,0 +1,13 @@
+mesa>=2.3.0
+networkx>=3.3
+anthropic>=0.28.0
+numpy>=1.26.4
+pandas>=2.2.2
+streamlit>=1.36.0
+plotly>=5.22.0
+streamlit-agraph>=0.0.45
+sqlalchemy>=2.0.31
+python-dotenv>=1.0.1
+pydantic>=2.8.2
+rich>=13.7.1
+tenacity>=8.4.2

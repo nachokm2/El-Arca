@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import mesa; import networkx; import numpy; import pandas; print\\('Core deps OK'\\)\")",
+      "Bash(pip install *)",
+      "Bash(python -c \"import mesa; import networkx; import numpy; import pandas; import anthropic; import streamlit; print\\('Todas las deps OK'\\)\")",
+      "Bash(python -c \"import sys; print\\(sys.path\\)\")",
+      "Bash(python -c \"import site; print\\(site.getusersitepackages\\(\\)\\)\")",
+      "Read(//c/Users/rodri/AppData/Roaming/Python/Python314/site-packages/**)",
+      "Bash(python -c \"import sys; sys.path.insert\\(0, 'C:/Users/rodri/AppData/Roaming/Python/Python314/site-packages'\\); import mesa; print\\(mesa.__version__\\)\")",
+      "Bash(where python *)",
+      "Bash(python -c \"import sys; print\\(sys.executable\\); print\\(sys.path\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(python -m pytest tests/ -v)",
+      "Bash(python -c \"import inspect, mesa; print\\(inspect.getsource\\(mesa.Agent.__init__\\)\\)\")",
+      "Bash(python -c \"import inspect, mesa; print\\(inspect.getsource\\(mesa.Model.register_agent\\)\\)\")",
+      "Bash(python -c \"import inspect, mesa; print\\(inspect.getsource\\(mesa.Model.__init__\\)\\)\")",
+      "Bash(python -m streamlit run dashboard/app.py --server.headless true --server.port 8501)",
+      "Bash(python -m streamlit run dashboard/app.py --server.port 8501)",
+      "Bash(python -m streamlit run dashboard/app.py --server.port 8502 --server.headless true)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8502/)",
+      "Bash(chromium-cli --session arca)",
+      "Bash(python -m playwright --version)",
+      "Bash(where msedge *)",
+      "Bash(where chrome *)",
+      "Bash(where chromium *)",
+      "Bash(python -m playwright install chromium)",
+      "Bash(git init *)",
+      "Bash(git remote *)",
+      "Bash(git add *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\rodri\\.claude\\projects\\c--Users-rodri-OneDrive-Escritorio-el-arca\\memory"
+    ]
+  }
+}
